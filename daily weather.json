@@ -1,0 +1,141 @@
+{
+  "name": "daily weather",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "85d95852-faa4-473b-b40a-78f8524a84fe",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openweathermap.org/data/2.5/weather?q=Lahore,PK&appid=9030710982b706a47d71f8a33bbc2c94&units=metric",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "6f2bee8d-b6ad-4dda-ad28-ceb3e631960f",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "988881ec-b498-4b68-aa63-c20a3280e833",
+              "name": "=subject",
+              "value": "=🌤️ Lahore Weather Update – {{ $now.format('dddd, MMM D') }}",
+              "type": "string"
+            },
+            {
+              "id": "322b6af9-fe3d-4a42-a1f2-a297667bbbf7",
+              "name": "=body",
+              "value": "=Good Morning ! \n\nHere is your daily weather update for Lahore:\n\n Temperature:  {{ $('HTTP Request').item.json.main.temp }}°C\nFeels Like:   {{ $('HTTP Request').item.json.main.feels_like }}°C\nHumidity:     {{ $('HTTP Request').item.json.main.humidity }}%\nWind Speed:   {{ $('HTTP Request').item.json.wind.speed }} m/s\n Condition:    {{ $('HTTP Request').item.json.weather[0].description }}\n\nSTAY AWAY FROM ME",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "8d10c84a-02dd-4467-ae2b-dcb37af3f0c5",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "sendTo": "   dnasa1920@gmail.com",
+        "subject": "={{ $json.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        576,
+        0
+      ],
+      "id": "729d36b1-1ae8-4b37-bcdf-b691cf7bfebd",
+      "name": "Send a message",
+      "webhookId": "30f3ba3d-03f1-417d-b5a7-9436047b3af0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "0HqomqU1KGaPWxEP",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d7605162-142e-4047-9b47-776c3379a85f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "517f45343eba1a4f83a47792d88536bc3ef48f9a109180886a76a87efb5a83aa"
+  },
+  "id": "WqGWc6JAjvYycq9d",
+  "tags": []
+}
