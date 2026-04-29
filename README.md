@@ -1,6 +1,4 @@
- n8n-weather-alert
- Daily Lahore weather alert automation built with n8n
- Lahore Daily Weather Alert — n8n Automation
+ 
 An automated workflow built with n8n that sends a daily weather 
 update for Lahore to Gmail every morning at 8am.
 
